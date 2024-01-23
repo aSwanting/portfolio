@@ -6,9 +6,9 @@
           <a href="">Logo</a>
         </div>
         <ul class="nav-menu">
-          <li class="nav-item"><a class="nav-link" href="">Menu 1</a></li>
-          <li class="nav-item"><a class="nav-link" href="">Menu 2</a></li>
-          <li class="nav-item"><a class="nav-link" href="">Menu 3</a></li>
+          <li v-for="item in navItems" class="nav-item">
+            <a class="nav-link" :href="item.url">{{ item.name }}</a>
+          </li>
         </ul>
       </nav>
     </div>
@@ -16,7 +16,26 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      navItems: [
+        {
+          name: "Menu 1",
+          url: "#",
+        },
+        {
+          name: "Menu 2",
+          url: "#",
+        },
+        {
+          name: "Menu 3",
+          url: "#",
+        },
+      ],
+    };
+  },
+};
 </script>
 
 <style lang="scss" scoped>
