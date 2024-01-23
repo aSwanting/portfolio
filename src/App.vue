@@ -25,7 +25,7 @@ export default {
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
-  background-color: rgb(186, 255, 238);
+  background-color: rgb(221, 255, 248);
 }
 .component {
   &.content {

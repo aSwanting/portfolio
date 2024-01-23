@@ -68,6 +68,8 @@ export default {
             padding: 24px;
             transition: all 200ms;
             &:hover {
+              color: rgba(28, 109, 110, 0.8);
+              font-weight: 700;
               background-color: rgba(0, 139, 86, 0.1);
             }
           }
