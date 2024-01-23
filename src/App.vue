@@ -24,10 +24,12 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  overflow: hidden;
   background-color: rgb(186, 255, 238);
 }
 .component {
   &.content {
+    padding: 30px;
     flex-grow: 1;
   }
 }

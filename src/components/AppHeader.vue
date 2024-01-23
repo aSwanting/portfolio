@@ -40,7 +40,7 @@ export default {
 
 <style lang="scss" scoped>
 header {
-  color: rgb(145, 145, 145);
+  color: rgb(85, 85, 85);
   background-color: rgb(250, 250, 250);
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
   nav {
