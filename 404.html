@@ -1,3 +1,6 @@
 <script>
-  window.location.href = "https://github.com/aSwanting/portfolio";
+  //   window.location.href = "https://aswanting.github.io/portfolio/";
+  history.pushState(null, null, "/about");
+  const popstateEvent = new PopStateEvent("popstate");
+  dispatchEvent(popstateEvent);
 </script>
