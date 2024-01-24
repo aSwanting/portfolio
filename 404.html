@@ -9,12 +9,7 @@
     <div id="app"></div>
 
     <script>
-      const routes = ["home", "about", "backend"];
       let pathName = window.location.pathname.split("/").at(-1);
-
-      // if (!routes.includes(pathName)) {
-      //   pathName = "404";
-      // }
       window.location.href =
         "https://aswanting.github.io/portfolio/?from=" + pathName;
     </script>
