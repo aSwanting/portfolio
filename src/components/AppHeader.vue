@@ -3,7 +3,9 @@
     <div class="container">
       <nav>
         <div class="nav-menu">
-          <a href="/">Gabriel D'Amico</a>
+          <router-link class="nav-link" :to="{ name: 'home' }">
+            Gabriel D'Amico
+          </router-link>
         </div>
         <ul class="nav-menu">
           <li v-for="item in navItems" class="nav-item">

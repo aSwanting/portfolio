@@ -1,6 +1,6 @@
 <template>
   <footer>
-    <div class="container">Footer</div>
+    <div class="container">gabu vision</div>
   </footer>
 </template>
 
