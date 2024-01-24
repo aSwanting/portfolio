@@ -1,24 +1,16 @@
-<!-- <script>
-  //   window.location.href = "https://aswanting.github.io/portfolio/";
-  history.pushState(null, null, "/portfolio/about");
-  const popstateEvent = new PopStateEvent("popstate");
-  dispatchEvent(popstateEvent);
-</script> -->
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>I have lost my way</title>
+    <title>Portfolio Front End</title>
   </head>
   <body>
     <div id="app"></div>
     <script>
-      const actualPath = window.location.href;
-      const app = document.getElementById("app");
-      const para = document.createElement("p");
-      app.append(para);
+      console.log(window.location.pathname);
+      window.history.pushState({}, "", "/portfolio/backend");
     </script>
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>
