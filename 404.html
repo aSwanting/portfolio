@@ -8,11 +8,9 @@
   <body>
     <div id="app"></div>
     <script>
-      // console.log(window.location.pathname);
-      // window.history.pushState({}, "", "/portfolio/backend");
       const pathName = window.location.pathname.split("/").at(-1);
       window.location.href =
-        "https://aswanting.github.io/portfolio/?" + pathName;
+        "https://aswanting.github.io/portfolio/?from=" + pathName;
     </script>
     <script type="module" src="/src/main.js"></script>
   </body>
