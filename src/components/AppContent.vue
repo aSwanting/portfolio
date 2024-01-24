@@ -8,7 +8,7 @@
             <a href="">{{ item.name }}</a>
           </li>
         </ul>
-        <p v-else>NADA</p>
+        <h2 v-else>Nothing to show...</h2>
       </div>
     </div>
   </section>
@@ -45,12 +45,20 @@ export default {
     flex-direction: column;
     height: 100%;
     h1 {
-      color: rgba(55, 63, 60, 0.671);
+      color: rgba(55, 63, 60, 0.7);
       font-size: 42px;
       text-transform: uppercase;
       text-align: center;
       font-weight: 300;
       margin-bottom: 24px;
+    }
+    h2 {
+      color: rgba(55, 63, 60, 0.4);
+      font-size: 24px;
+      text-transform: uppercase;
+      text-align: center;
+      font-weight: 300;
+      padding: 30px;
     }
     .content-wrapper {
       overflow: hidden;
