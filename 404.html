@@ -3,12 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Portfolio Front End</title>
+    <title>WOAH</title>
   </head>
   <body>
     <div id="app"></div>
     <script>
-      const pathName = window.location.pathname.split("/").at(-1);
+      const routes = ["home", "about", "backend"];
+      let pathName = window.location.pathname.split("/").at(-1);
+      if (!routes.includes("pathName")) {
+        pathName = "404";
+      }
       window.location.href =
         "https://aswanting.github.io/portfolio/?from=" + pathName;
     </script>
