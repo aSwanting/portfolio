@@ -21,7 +21,7 @@ export default {
   data() {
     return {
       items: [],
-      API_URL: "http://127.0.0.1:8000/api",
+      API_URL: "https://portfolio-back-end.fly.dev/api",
     };
   },
   methods: {
