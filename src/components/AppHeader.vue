@@ -7,7 +7,9 @@
         </div>
         <ul class="nav-menu">
           <li v-for="item in navItems" class="nav-item">
-            <a class="nav-link" :href="item.url">{{ item.name }}</a>
+            <router-link class="nav-link" :to="{ name: item.name }">
+              {{ item.label }}
+            </router-link>
           </li>
         </ul>
       </nav>
@@ -21,15 +23,18 @@ export default {
     return {
       navItems: [
         {
-          name: "Home",
+          name: "home",
+          label: "Home",
           url: "#",
         },
         {
-          name: "About",
+          name: "about",
+          label: "About",
           url: "#",
         },
         {
-          name: "Backend Items",
+          name: "backend",
+          label: "Backend Items",
           url: "#",
         },
       ],
