@@ -3,11 +3,12 @@
     <div class="container">
       <h1>Content</h1>
       <div class="content-wrapper">
-        <ul>
+        <ul v-if="items.length > 0">
           <li v-for="item in items">
             <a href="">{{ item.name }}</a>
           </li>
         </ul>
+        <p v-else>NADA</p>
       </div>
     </div>
   </section>
