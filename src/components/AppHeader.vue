@@ -3,7 +3,7 @@
     <div class="container">
       <nav>
         <div class="nav-menu">
-          <a href="">Gabriel D'Amico</a>
+          <a href="/">Gabriel D'Amico</a>
         </div>
         <ul class="nav-menu">
           <li v-for="item in navItems" class="nav-item">
