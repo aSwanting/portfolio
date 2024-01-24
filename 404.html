@@ -10,7 +10,9 @@
     <script>
       // console.log(window.location.pathname);
       // window.history.pushState({}, "", "/portfolio/backend");
-      window.location.href = "https://aswanting.github.io/portfolio/?fresh";
+      const pathName = window.location.pathname.split("/").at(-1);
+      window.location.href =
+        "https://aswanting.github.io/portfolio/?" + pathName;
     </script>
     <script type="module" src="/src/main.js"></script>
   </body>
