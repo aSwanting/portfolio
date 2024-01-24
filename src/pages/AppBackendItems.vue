@@ -39,7 +39,7 @@ export default {
 
 <style lang="scss" scoped>
 .app-content {
-  overflow: hidden;
+  overflow: auto;
   .container {
     display: flex;
     flex-direction: column;
@@ -61,6 +61,7 @@ export default {
       padding: 30px;
     }
     .content-wrapper {
+      min-height: 200px;
       overflow: hidden;
       border: 6px solid rgba(0, 185, 108, 0.5);
       border-radius: 25px;
