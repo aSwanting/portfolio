@@ -1,6 +1,7 @@
 <template>
   <AppHeader class="component header" />
-  <AppContent class="component content" />
+  <!-- <AppContent class="component content" /> -->
+  <router-view class="component content"></router-view>
   <AppFooter class="component footer" />
 </template>
 
