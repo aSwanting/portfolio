@@ -7,24 +7,26 @@
 </template>
 
 <script>
-import axios from "axios";
-
 export default {
   data() {
     return {
-      items: [],
-      API_URL: "http://127.0.0.1:8000/api",
+      routes: ["home", "about", "backend"],
+      routeQuery: this.$route.query.from,
     };
   },
   methods: {
-    fetch() {
-      axios.get(`${this.API_URL}/items`).then((res) => {
-        this.items = res.data.results;
-      });
+    routeMatch() {
+      let path;
+      if (this.routeQuery) {
+        this.routes.includes(this.routeQuery)
+          ? (path = this.routeQuery)
+          : (path = "404");
+        this.$router.push(path);
+      }
     },
   },
   created() {
-    this.fetch();
+    this.routeMatch();
   },
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
   <footer>
-    <div class="container">gabu vision</div>
+    <div class="container">gabu vision v0.094</div>
   </footer>
 </template>
 

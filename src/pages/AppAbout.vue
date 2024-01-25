@@ -7,26 +7,7 @@
 </template>
 
 <script>
-import axios from "axios";
-
-export default {
-  data() {
-    return {
-      items: [],
-      API_URL: "http://127.0.0.1:8000/api",
-    };
-  },
-  methods: {
-    fetch() {
-      axios.get(`${this.API_URL}/items`).then((res) => {
-        this.items = res.data.results;
-      });
-    },
-  },
-  created() {
-    this.fetch();
-  },
-};
+export default {};
 </script>
 
 <style lang="scss" scoped>
