@@ -1,7 +1,7 @@
 <template>
   <section class="app-content">
     <div class="container">
-      <h1>Content</h1>
+      <h1>Backend Items</h1>
       <div class="content-wrapper">
         <ul v-if="items.length > 0">
           <li v-for="item in items">
