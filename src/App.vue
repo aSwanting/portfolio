@@ -1,11 +1,11 @@
 <template>
-  <AppHeader class="component header" />
-  <!-- <AppContent class="component content" /> -->
+  <AppHeader class="component header" :routes="routes" />
   <router-view class="component content"></router-view>
   <AppFooter class="component footer" />
 </template>
 
 <script>
+import { router } from "./router";
 import AppHeader from "./components/AppHeader.vue";
 import AppContent from "./components/AppContent.vue";
 import AppFooter from "./components/AppFooter.vue";
@@ -15,6 +15,31 @@ export default {
     AppHeader,
     AppContent,
     AppFooter,
+  },
+  methods: {
+    routeMatch() {
+      let path;
+      if (this.routeQuery) {
+        this.routeNames.includes(this.routeQuery)
+          ? (path = this.routeQuery)
+          : (path = "404");
+        this.$router.push(path);
+      }
+    },
+  },
+  computed: {
+    routes() {
+      return router.options.routes;
+    },
+    routeNames() {
+      return this.routes.map((route) => route.name);
+    },
+    routeQuery() {
+      return window.location.search.replace("?", "");
+    },
+  },
+  created() {
+    this.routeMatch();
   },
 };
 </script>

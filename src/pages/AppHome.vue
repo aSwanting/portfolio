@@ -7,27 +7,35 @@
 </template>
 
 <script>
+// import { router } from "../router";
+
 export default {
-  data() {
-    return {
-      routes: ["home", "about", "backend"],
-      routeQuery: this.$route.query.from,
-    };
-  },
-  methods: {
-    routeMatch() {
-      let path;
-      if (this.routeQuery) {
-        this.routes.includes(this.routeQuery)
-          ? (path = this.routeQuery)
-          : (path = "404");
-        this.$router.push(path);
-      }
-    },
-  },
-  created() {
-    this.routeMatch();
-  },
+  // data() {
+  //   return {
+  //     routeQuery: this.$route.query.from,
+  //   };
+  // },
+  // methods: {
+  //   routeMatch() {
+  //     let path;
+  //     const routes = this.navItems.map((route) => route.name);
+  //     console.log(routes);
+  //     // if (this.routeQuery) {
+  //     //   routes.includes(this.routeQuery)
+  //     //     ? (path = this.routeQuery)
+  //     //     : (path = "404");
+  //     //   this.$router.push(path);
+  //     // }
+  //   },
+  // },
+  // computed: {
+  //   navItems() {
+  //     return router.options.routes;
+  //   },
+  // },
+  // created() {
+  //   this.routeMatch();
+  // },
 };
 </script>
 

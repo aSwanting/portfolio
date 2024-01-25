@@ -8,7 +8,7 @@
           </router-link>
         </div>
         <ul class="nav-menu">
-          <li v-for="item in navItems" class="nav-item">
+          <li v-for="item in routes" class="nav-item">
             <router-link class="nav-link" :to="{ name: item.name }">
               {{ item.label }}
             </router-link>
@@ -21,26 +21,14 @@
 
 <script>
 export default {
+  props: {
+    routes: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
-    return {
-      navItems: [
-        {
-          name: "home",
-          label: "Home",
-          url: "#",
-        },
-        {
-          name: "about",
-          label: "About",
-          url: "#",
-        },
-        {
-          name: "backend",
-          label: "Backend Items",
-          url: "#",
-        },
-      ],
-    };
+    return {};
   },
 };
 </script>
