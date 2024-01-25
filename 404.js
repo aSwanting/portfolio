@@ -4,4 +4,5 @@ function redirectWithQuery() {
   window.location.href = basePath + pathQuery;
 }
 
+console.log("SCRIPT");
 redirectWithQuery();
