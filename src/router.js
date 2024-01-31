@@ -4,6 +4,7 @@ import AppHome from "./pages/AppHome.vue";
 import AppAbout from "./pages/AppAbout.vue";
 import AppBackendItems from "./pages/AppBackendItems.vue";
 import Circles from "./pages/Circles.vue";
+import BreadFinder from "./pages/BreadFinder.vue";
 import NotFound from "./pages/NotFound.vue";
 
 const router = createRouter({
@@ -30,8 +31,14 @@ const router = createRouter({
     {
       path: "/circles",
       name: "circles",
-      label: "Circles!!",
+      label: "circle.js",
       component: Circles,
+    },
+    {
+      path: "/bread-finder",
+      name: "bread-finder",
+      label: "bread-finder",
+      component: BreadFinder,
     },
     {
       path: "/:wildPath(.*)*",
