@@ -1,6 +1,17 @@
 <template>
   <section>
     <div class="container">
+      <div class="poi-wrapper">
+        <div
+          class="filtered-pois"
+          v-for="(result, index) in filteredPois"
+          :key="index"
+        >
+          <p class="name">{{ result.name + " " + index }}</p>
+          <p class="position">{{ result.position.lat }}</p>
+          <p class="position">{{ result.position.lon }}</p>
+        </div>
+      </div>
       <div class="search-wrapper">
         <input
           class="query-input"
@@ -35,6 +46,7 @@ export default {
       breadList: null,
       breadQuery: null,
       queryResults: null,
+      filteredPois: null,
     };
   },
   watch: {
@@ -52,7 +64,7 @@ export default {
       const filterURL = this.API_URL + this.queryType + this.API_EXT;
       const lat = this.queryResults[0].position.lat;
       const lon = this.queryResults[0].position.lon;
-      const searchRadius = 100;
+      const searchRadius = 10000 * 1000;
 
       console.log(`Filter:
       Filter URL: ${filterURL}
@@ -63,36 +75,51 @@ export default {
       const geometryList = [
         {
           type: "CIRCLE",
-          position: lat + " " + lon,
+          position: lat + ", " + lon,
           radius: searchRadius,
         },
       ];
 
       const poiList = [
         {
-          lat: "37.61274",
-          lon: "15.166195",
+          name: "location-1",
+          position: {
+            lat: "37.61274",
+            lon: "15.166195",
+          },
         },
         {
-          lat: "37.61274",
-          lon: "15.168195",
+          name: "location-2",
+          position: {
+            lat: "37.61274",
+            lon: "15.168195",
+          },
         },
         {
-          lat: "38.61274",
-          lon: "12.166195",
+          name: "location-3",
+          position: {
+            lat: "38.61274",
+            lon: "12.166195",
+          },
         },
       ];
 
       console.log(JSON.stringify(geometryList));
       console.log(JSON.stringify(poiList));
 
-      axios.post(`${filterURL}`, {
-        params: {
-          // geometryList: JSON.stringify(geometryList),
-          // poiList: JSON.stringify(poiList),
-          key: this.API_KEY,
-        },
-      });
+      axios
+        .get(`${filterURL}`, {
+          params: {
+            geometryList: JSON.stringify(geometryList),
+            // poiList: JSON.stringify(poiList),
+            // poiList: JSON.stringify(this.breadList),
+            poiList: JSON.stringify(this.breadMap.splice(0, 51)),
+            key: this.API_KEY,
+          },
+        })
+        .then((res) => {
+          this.filteredPois = res.data.results;
+        });
     },
     tomtomSearch() {
       this.queryType = "/search/";
@@ -107,7 +134,6 @@ export default {
             }
           )
           .then((res) => {
-            // console.log(res.data);
             this.queryResults = res.data.results;
           });
       }
@@ -117,7 +143,30 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+section {
+  overflow: auto;
+}
 .container {
+  .poi-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .filtered-pois {
+    flex-basis: calc((100% / 6) - 10px);
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    padding: 20px 0px;
+    overflow: hidden;
+    text-align: center;
+    .name {
+      font-weight: 800;
+      font-size: 12px;
+    }
+    .position {
+      font-size: 10px;
+    }
+  }
   .search-wrapper {
     padding: 30px;
     .query-input {
