@@ -2,24 +2,39 @@
   <section>
     <div class="container">
       <div class="poi-wrapper">
-        <div
-          class="filtered-pois"
-          v-for="(result, index) in filteredPois"
-          :key="index"
-        >
-          <p class="name">{{ result.name + " " + index }}</p>
+        <div class="filtered-pois" v-for="(result, index) in filterResults">
+          <p>{{ index + 1 }}</p>
+          <p class="name">{{ result.name }}</p>
           <p class="position">{{ result.position.lat }}</p>
           <p class="position">{{ result.position.lon }}</p>
         </div>
       </div>
       <div class="search-wrapper">
-        <input
-          class="query-input"
-          type="text"
-          v-model="breadQuery"
-          @keydown.enter="tomtomSearch()"
-        />
-        <div v-for="result in queryResults">
+        <div class="search-form">
+          <div>
+            <label for="search-query">Address search</label>
+            <input
+              class="query-input"
+              type="text"
+              name="search-query"
+              id="search-query"
+              v-model="searchQuery"
+              @keydown.enter="tomtomSearch()"
+            />
+          </div>
+          <div>
+            <label for="search-radius">Search radius in km</label>
+            <input
+              class="query-input"
+              type="number"
+              name="search-radius"
+              id="search-radius"
+              v-model="searchRadius"
+              @keydown.enter="tomtomSearch()"
+            />
+          </div>
+        </div>
+        <div v-for="result in searchResults">
           <div class="query-result">
             <span>{{ result.address.freeformAddress }}</span>
             <span> ({{ result.position.lat }}</span>
@@ -32,101 +47,35 @@
 </template>
 
 <script>
-import breadMap from "../bread-map.json";
 import axios from "axios";
-
+import poiList from "../poiList.json";
+import geometryList from "../geometryList.json";
+import requestData from "../request-data.json";
 export default {
   data() {
     return {
-      breadMap: breadMap,
       API_URL: "https://api.tomtom.com/search/2",
       API_KEY: "qD5AjlcGdPMFjUKdDAYqT7xYi3yIRo3c",
       API_EXT: ".json",
-      queryType: null,
-      breadList: null,
-      breadQuery: null,
-      queryResults: null,
-      filteredPois: null,
+      searchRadius: 20,
+      searchQuery: null,
+      searchResults: null,
+      filterResults: {},
     };
   },
   watch: {
-    queryResults() {
+    searchResults() {
       this.tomtomFilter();
     },
-    // breadQuery() {
-    //   this.tomtomSearch();
-    //   // this.tomtomFilter();
-    // },
   },
   methods: {
-    tomtomFilter() {
-      this.queryType = "/geometryFilter";
-      const filterURL = this.API_URL + this.queryType + this.API_EXT;
-      const lat = this.queryResults[0].position.lat;
-      const lon = this.queryResults[0].position.lon;
-      const searchRadius = 10000 * 1000;
-
-      console.log(`Filter:
-      Filter URL: ${filterURL}
-      Search Position: ${lat} ${lon}
-      Search Radius: ${searchRadius} meters
-      `);
-
-      const geometryList = [
-        {
-          type: "CIRCLE",
-          position: lat + ", " + lon,
-          radius: searchRadius,
-        },
-      ];
-
-      const poiList = [
-        {
-          name: "location-1",
-          position: {
-            lat: "37.61274",
-            lon: "15.166195",
-          },
-        },
-        {
-          name: "location-2",
-          position: {
-            lat: "37.61274",
-            lon: "15.168195",
-          },
-        },
-        {
-          name: "location-3",
-          position: {
-            lat: "38.61274",
-            lon: "12.166195",
-          },
-        },
-      ];
-
-      console.log(JSON.stringify(geometryList));
-      console.log(JSON.stringify(poiList));
-
-      axios
-        .get(`${filterURL}`, {
-          params: {
-            geometryList: JSON.stringify(geometryList),
-            // poiList: JSON.stringify(poiList),
-            // poiList: JSON.stringify(this.breadList),
-            poiList: JSON.stringify(this.breadMap.splice(0, 51)),
-            key: this.API_KEY,
-          },
-        })
-        .then((res) => {
-          this.filteredPois = res.data.results;
-        });
-    },
     tomtomSearch() {
-      this.queryType = "/search/";
-      if (this.breadQuery) {
+      if (this.searchQuery) {
         axios
           .get(
-            `${this.API_URL}${this.queryType}${this.breadQuery}${this.API_EXT}`,
+            "https://api.tomtom.com/search/2/search/" +
+              this.searchQuery +
+              ".json?key=qD5AjlcGdPMFjUKdDAYqT7xYi3yIRo3c",
             {
               params: {
                 key: this.API_KEY,
@@ -134,11 +83,43 @@ export default {
             }
           )
           .then((res) => {
-            this.queryResults = res.data.results;
+            this.searchResults = res.data.results;
           });
       }
     },
+    async tomtomFilter() {
+      const lat = this.searchResults[0].position.lat;
+      const lon = this.searchResults[0].position.lon;
+      const totalItems = poiList.length;
+      const batchSize = 25;
+      let offset = 0;
+
+      while (offset < totalItems) {
+        const data = {
+          poiList: poiList.slice(offset, offset + batchSize),
+          geometryList: [
+            {
+              position: lat + "," + lon,
+              radius: this.searchRadius * 1000,
+              type: "CIRCLE",
+            },
+          ],
+        };
+
+        const response = await axios.post(
+          "https://api.tomtom.com/search/2/geometryFilter.json?key=qD5AjlcGdPMFjUKdDAYqT7xYi3yIRo3c",
+          data
+        );
+
+        Object.assign(this.filterResults, response.data.results);
+        offset += batchSize;
+
+        await new Promise((resolve) => setTimeout(resolve, 200));
+      }
+      console.log(this.filterResults);
+    },
   },
+  mounted() {},
 };
 </script>
 
@@ -147,17 +128,24 @@ section {
   overflow: auto;
 }
 .container {
+  .poi-wrapper,
+  .search-wrapper {
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    padding: 30px;
+  }
   .poi-wrapper {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
   }
   .filtered-pois {
     flex-basis: calc((100% / 6) - 10px);
     border: 1px solid rgba(0, 0, 0, 0.25);
     border-radius: 20px;
-    padding: 20px 0px;
-    overflow: hidden;
+    padding: 20px;
     text-align: center;
     .name {
       font-weight: 800;
@@ -168,13 +156,22 @@ section {
     }
   }
   .search-wrapper {
-    padding: 30px;
+    .search-form {
+      margin-bottom: 10px;
+      display: flex;
+      gap: 20px;
+      & > :first-child {
+        flex-grow: 1;
+      }
+    }
     .query-input {
+      border: 1px solid rgba(135, 184, 135, 0.521);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-block: 5px;
+      display: block;
+      outline: none;
       width: 100%;
-      padding: 10px 20px;
-      margin-bottom: 20px;
-      border: 1px solid rgba(179, 179, 179, 0.5);
-      border-radius: 20px;
     }
     .query-result {
       padding: 5px 20px;
