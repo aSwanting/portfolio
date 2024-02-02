@@ -1,12 +1,14 @@
 <template>
   <section>
     <div class="container">
-      <div class="poi-wrapper">
-        <div class="filtered-pois" v-for="(result, index) in filterResults">
-          <p>{{ index + 1 }}</p>
-          <p class="name">{{ result.name }}</p>
-          <p class="position">{{ result.position.lat }}</p>
-          <p class="position">{{ result.position.lon }}</p>
+      <div class="poi">
+        <div class="poi-wrapper">
+          <div class="filtered-pois" v-for="(result, index) in filterResults">
+            <p class="index">{{ index + 1 }}</p>
+            <p class="name">{{ result.name }}</p>
+            <p class="region">{{ result.region }}</p>
+            <p class="city">{{ result.city }}</p>
+          </div>
         </div>
       </div>
       <div class="search-wrapper">
@@ -19,7 +21,7 @@
               name="search-query"
               id="search-query"
               v-model="searchQuery"
-              @keydown.enter="tomtomSearch()"
+              @keydown.enter="tomtomFilter()"
             />
           </div>
           <div>
@@ -30,15 +32,19 @@
               name="search-radius"
               id="search-radius"
               v-model="searchRadius"
-              @keydown.enter="tomtomSearch()"
+              @keydown.enter="tomtomFilter()"
             />
           </div>
         </div>
-        <div v-for="result in searchResults">
-          <div class="query-result">
-            <span>{{ result.address.freeformAddress }}</span>
-            <span> ({{ result.position.lat }}</span>
-            <span>, {{ result.position.lon }})</span>
+        <div class="query-results">
+          <div class="query-result" v-for="result in searchResults">
+            <span @click="searchSuggested(result.address.freeformAddress)">{{
+              result.address.freeformAddress
+            }}</span>
+            <span>
+              {{ result.position.lat }},
+              {{ result.position.lon }}
+            </span>
           </div>
         </div>
       </div>
@@ -60,15 +66,22 @@ export default {
       searchRadius: 20,
       searchQuery: null,
       searchResults: null,
-      filterResults: {},
+      filterResults: [],
     };
   },
   watch: {
-    searchResults() {
-      this.tomtomFilter();
+    searchQuery() {
+      this.tomtomSearch();
     },
+    // searchResults() {
+    //   this.tomtomFilter();
+    // },
   },
   methods: {
+    searchSuggested(suggestedAddress) {
+      this.searchQuery = suggestedAddress;
+      this.tomtomFilter();
+    },
     tomtomSearch() {
       if (this.searchQuery) {
         axios
@@ -90,6 +103,7 @@ export default {
     async tomtomFilter() {
       const lat = this.searchResults[0].position.lat;
       const lon = this.searchResults[0].position.lon;
+      this.filterResults = [];
       const totalItems = poiList.length;
       const batchSize = 25;
       let offset = 0;
@@ -111,7 +125,10 @@ export default {
           data
         );
 
-        Object.assign(this.filterResults, response.data.results);
+        console.log(response.data.results);
+
+        this.filterResults.push(...response.data.results);
+
         offset += batchSize;
 
         await new Promise((resolve) => setTimeout(resolve, 200));
@@ -128,31 +145,56 @@ section {
   overflow: auto;
 }
 .container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
   .poi-wrapper,
   .search-wrapper {
-    border: 1px solid rgba(0, 0, 0, 0.25);
-    border-radius: 20px;
     padding: 30px;
   }
-  .poi-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-  }
-  .filtered-pois {
-    flex-basis: calc((100% / 6) - 10px);
-    border: 1px solid rgba(0, 0, 0, 0.25);
-    border-radius: 20px;
-    padding: 20px;
-    text-align: center;
-    .name {
-      font-weight: 800;
-      font-size: 12px;
-    }
-    .position {
-      font-size: 10px;
+  .poi {
+    flex-grow: 1;
+    overflow: auto;
+    border-block: 2px solid rgba(69, 126, 91, 0.151);
+    .poi-wrapper {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      flex-wrap: wrap;
+      gap: 20px;
+      .filtered-pois {
+        flex-basis: calc((100% / 6) - 20px);
+        height: 250px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        font-size: 12px;
+        text-align: center;
+        color: rgb(0, 71, 88);
+        & > * {
+          padding: 15px;
+        }
+        .index {
+          background-color: rgba(255, 255, 255, 0.1);
+          font-size: 18px;
+          font-weight: 700;
+        }
+        .name {
+          background-color: rgba(180, 180, 180, 0.1);
+          flex-grow: 1;
+          font-size: 16px;
+          font-weight: 700;
+        }
+        .region {
+          background-color: rgba(90, 90, 90, 0.1);
+        }
+        .city {
+          background-color: rgba(0, 0, 0, 0.1);
+          font-weight: 600;
+        }
+      }
     }
   }
   .search-wrapper {
@@ -173,9 +215,24 @@ section {
       outline: none;
       width: 100%;
     }
-    .query-result {
-      padding: 5px 20px;
-      margin-bottom: 10px;
+    .query-results {
+      border-block: 1px solid rgba(69, 126, 91, 0.151);
+      height: 80px;
+      overflow: auto;
+      .query-result {
+        font-size: 12px;
+        margin: 8px 16px;
+        display: flex;
+        & :first-child {
+          cursor: pointer;
+          margin-right: auto;
+          transition: 200ms all;
+          &:hover {
+            color: rgb(31, 185, 152);
+            font-weight: 700;
+          }
+        }
+      }
     }
   }
 }
