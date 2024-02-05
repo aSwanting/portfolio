@@ -5,9 +5,8 @@
         <div class="poi-wrapper">
           <div class="filtered-pois" v-for="(result, index) in filterResults">
             <p class="index">{{ index + 1 }}</p>
-            <p class="name">{{ result.name }}</p>
-            <p class="region">{{ result.region }}</p>
-            <p class="city">{{ result.city }}</p>
+            <p class="name">{{ result.description }}</p>
+            <p class="address">{{ result.address }}</p>
           </div>
         </div>
       </div>
@@ -67,6 +66,7 @@ export default {
       searchQuery: null,
       searchResults: null,
       filterResults: [],
+      addressList: [],
     };
   },
   watch: {
@@ -82,22 +82,19 @@ export default {
       this.searchQuery = suggestedAddress;
       this.tomtomFilter();
     },
-    tomtomSearch() {
+    async tomtomSearch() {
       if (this.searchQuery) {
-        axios
-          .get(
-            "https://api.tomtom.com/search/2/search/" +
-              this.searchQuery +
-              ".json?key=qD5AjlcGdPMFjUKdDAYqT7xYi3yIRo3c",
-            {
-              params: {
-                key: this.API_KEY,
-              },
-            }
-          )
-          .then((res) => {
-            this.searchResults = res.data.results;
-          });
+        const response = await axios.get(
+          "https://api.tomtom.com/search/2/search/" +
+            this.searchQuery +
+            ".json?key=qD5AjlcGdPMFjUKdDAYqT7xYi3yIRo3c",
+          {
+            params: {
+              key: this.API_KEY,
+            },
+          }
+        );
+        this.searchResults = response.data.results;
       }
     },
     async tomtomFilter() {
@@ -110,7 +107,8 @@ export default {
 
       while (offset < totalItems) {
         const data = {
-          poiList: poiList.slice(offset, offset + batchSize),
+          poiList: this.addressList.slice(offset, offset + batchSize),
+          // poiList: poiList.slice(offset, offset + batchSize),
           geometryList: [
             {
               position: lat + "," + lon,
@@ -121,8 +119,13 @@ export default {
         };
 
         const response = await axios.post(
-          "https://api.tomtom.com/search/2/geometryFilter.json?key=qD5AjlcGdPMFjUKdDAYqT7xYi3yIRo3c",
-          data
+          "https://api.tomtom.com/search/2/geometryFilter.json",
+          data,
+          {
+            params: {
+              key: "qD5AjlcGdPMFjUKdDAYqT7xYi3yIRo3c",
+            },
+          }
         );
 
         console.log(response.data.results);
@@ -135,8 +138,21 @@ export default {
       }
       console.log(this.filterResults);
     },
+    async fetchData() {
+      const response = await axios.get("http://127.0.0.1:8000/api/apartments");
+      this.addressList = response.data.results;
+      this.addressList.forEach((element) => {
+        element.position = {
+          lat: element.latitude,
+          lon: element.longitude,
+        };
+      });
+      console.log(this.addressList.length);
+    },
   },
-  mounted() {},
+  mounted() {
+    this.fetchData();
+  },
 };
 </script>
 
@@ -186,13 +202,12 @@ section {
           flex-grow: 1;
           font-size: 16px;
           font-weight: 700;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
-        .region {
+        .address {
           background-color: rgba(90, 90, 90, 0.1);
-        }
-        .city {
-          background-color: rgba(0, 0, 0, 0.1);
-          font-weight: 600;
         }
       }
     }
